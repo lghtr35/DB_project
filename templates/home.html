@@ -1,0 +1,15 @@
+  {% extends "layout.html" %}
+  {% block title %}Home{% endblock %}
+  {% block content %}
+  <div>
+    <form action="" method="POST" name="posting">
+      <input type="text" id="post_data" name="post"/>
+      <input type="submit" value="submit"/>
+    </form>
+    {%for i in payload%}
+    <h2>{{i[0]}}</h2>
+    <p>{{i[2]}}</p>
+    <p>{{i[3]}}</p>
+    {%endfor%}
+  </div>
+  {% endblock %}

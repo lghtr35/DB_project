@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>MED App - {% block title %}{% endblock %}</title>
+  </head>
+  <body>
+    <ul>
+        <li><a href="{{ url_for('home_page') }}">Home</a></li>
+        <li><a href="{{ url_for('my_page',personID=1) }}">Profile</a></li>
+        <li><a href="{{url_for('signup_page')}}">Signup</a></li>
+      </ul>
+      <h1>MED</h1>
+    {% block content %}{% endblock %}
+
+    <footer>
+    </footer>
+  </body>
+</html>

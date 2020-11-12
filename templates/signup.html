@@ -1,0 +1,19 @@
+{% extends "layout.html"%}
+{%block title%}{{Username}}{%endblock%}
+{%block content%}
+<div>
+<h1>Sign Up</h1>
+<form action="" method="POST">
+    <label for="email_label">Enter your ITU e-mail</label>
+    <input type="text" name="email" class="input"/>
+    <label for="Password_label">Give your password</label>
+    <input name="password" type="password"/>
+    <label for="fname_label">First Name</label>
+    <input name="fname" type="text"/>
+    <label for="lname_label">Last Name</label>
+    <input name="lname" type="text"/>
+    <input type="submit" name="Submit"/>
+</form>
+
+</div>
+{%endblock%}
