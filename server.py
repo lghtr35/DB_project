@@ -2,12 +2,16 @@ from flask import Flask,render_template,url_for,request,g
 import mysql.connector
 from datetime import datetime
 import hashlib
-db=mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="sanane22021999",
-        database="Itu_soc_app"
-    )
+def get_db():
+    if 'db' not in g:
+        g.db=mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="sanane22021999",
+            database="Itu_soc_app"
+        )
+    return g.db
+
 def createApp():
     app=Flask(__name__)
     app.config["DEBUG"] = True
@@ -16,7 +20,14 @@ def createApp():
     app.add_url_rule("/profile/<int:personID>", view_func=my_page,methods=['GET','POST'])
     app.add_url_rule("/signup",view_func=signup_page,methods=['POST','GET'])
     return app
+@app.teardown_appcontext
+def teardown_db(exception):
+    db = g.pop('db', None)
+
+    if db is not None:
+        db.close()
 def home_page():
+    db=get_db()
     cursor=db.cursor()
     cursor.execute('SELECT post_data,personID,name_author,pub_date FROM Posts;')
     tables=cursor.fetchall()
@@ -29,6 +40,7 @@ def home_page():
 def my_page(personID):
     return render_template("profile.html")
 def signup_page():
+    db=get_db()
     cursor=db.cursor()
     if request.method=='POST':
         cursor.execute('SELECT COUNT(personID) FROM Users;')
