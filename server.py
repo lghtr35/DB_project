@@ -1,43 +1,24 @@
-from flask import Flask,render_template,url_for,request,g
+from flask import Flask,render_template,url_for,request,g,jsonify
 import mysql.connector
 from datetime import datetime
+from Users import users_all,user_one
+from DB_call import get_db
 import hashlib
-def get_db():
-    if 'db' not in g:
-        g.db=mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="sanane22021999",
-            database="Itu_soc_app"
-        )
-    return g.db
-
+import json
 def createApp():
     app=Flask(__name__)
     app.config["DEBUG"] = True
     app.config["PORT"] = 8080
     app.add_url_rule("/", view_func=home_page,methods=['GET','POST'])
-    app.add_url_rule("/profile/<int:personID>", view_func=my_page,methods=['GET','POST'])
+    app.add_url_rule("/profile", view_func=my_page,methods=['GET','POST'])
     app.add_url_rule("/signup",view_func=signup_page,methods=['POST','GET'])
+    app.add_url_rule("/users/all",view_func=users_all,methods=['GET'])
+    app.add_url_rule("/users/<int:personID>",view_func=user_one,methods=['GET'])
     return app
-@app.teardown_appcontext
-def teardown_db(exception):
-    db = g.pop('db', None)
-
-    if db is not None:
-        db.close()
 def home_page():
-    db=get_db()
-    cursor=db.cursor()
-    cursor.execute('SELECT post_data,personID,name_author,pub_date FROM Posts;')
-    tables=cursor.fetchall()
-    print(tables)
-    if request.method == 'POST':
-        post_data=request.form('post_data')
-        cursor.execute("INSERT INTO Posts (post_data,personID,name_author) VALUES ('%s',%s,'%s');",post_data,12,'me and myself')
-    cursor.close()
-    return render_template("home.html",payload=tables)
-def my_page(personID):
+    payload=users_all()
+    return render_template("home.html",payload=payload)
+def my_page():
     return render_template("profile.html")
 def signup_page():
     db=get_db()
@@ -56,4 +37,15 @@ def signup_page():
     return render_template("signup.html")
 if __name__=="__main__":
     app=createApp()
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return "<h1>404</h1><p>The resource could not be found.</p>", 404
+    @app.teardown_appcontext
+    def teardown_db(exception):
+        db = g.pop('db', None)
+        if db is not None:
+            db.close()
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return "<h1>404</h1><p>The resource could not be found.</p>", 404
     app.run(host="0.0.0.0",port=8080,debug=True)
