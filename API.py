@@ -14,7 +14,7 @@ def users_all():
     users=cursor.fetchall()
     user_api=[]
     for i in users:
-        user_api.append({"id":i[0],"fname":i[1],"lname":i[2],"email":i[3],"is_admin":i[4],"bio":i[5],"confirmed":i[6]})
+        user_api.append({"id":i[0],"fname":i[1],"lname":i[2],"email":i[3],"is_admin":i[4],"bio":i[5]})
     return jsonify(user_api)
 def user_one(data):
     db=get_db()
@@ -25,7 +25,7 @@ def user_one(data):
         cursor.execute("SELECT * FROM Users WHERE e_mail = %s;",(data,))
     that_user=cursor.fetchone()
     if that_user:
-        user_api={that_user[0]:{"first_name":that_user[1],"last_name":that_user[2],"email":that_user[3],"is_admin":that_user[4],"bio":that_user[5],"confirmed":that_user[6]}}
+        user_api={that_user[0]:{"first_name":that_user[1],"last_name":that_user[2],"email":that_user[3],"is_admin":that_user[4],"bio":that_user[5]}}
     else:
         return "<h1>404</h1><p>The resource could not be found.</p>", 404
     return jsonify(user_api)
@@ -43,12 +43,11 @@ def post_user():
 def insert_one_user(data):
     db=get_db()
     cursor=db.cursor()
-    confirmation_token_generate(data['email'])
     cursor.execute("SELECT COUNT(*) FROM Users WHERE e_mail = %(email)s",data)
     check=cursor.fetchone()
     if(check[0]>0):
         return {"response":"User exists"},404
-    cursor.execute("INSERT INTO Users (F_name,L_name,e_mail,is_admin,bio,confirmed) VALUES (%(fname)s,%(lname)s,%(email)s,%(is_admin)s,%(bio)s,%(confirmed)s)",data)
+    cursor.execute("INSERT INTO Users (F_name,L_name,e_mail,is_admin,bio) VALUES (%(fname)s,%(lname)s,%(email)s,%(is_admin)s,%(bio)s)",data)
     cursor.execute("SELECT personID FROM Users WHERE e_mail = %(email)s",data)
     that_user_id=cursor.fetchone()
     hash_pass_dict={
@@ -60,19 +59,6 @@ def insert_one_user(data):
     cursor.close()
     db.commit()
     return data,201
-def confirmation_token_generate(email):
-    serializer=URLSafeTimedSerializer(secretkey)
-    return  serializer.dumps(email,salt=salt)
-def check_confirmation_token(token,expiration=86400):
-    serializer=URLSafeTimedSerializer(secretkey)
-    try:
-        email=serializer.loads(
-            token,
-            salt=salt,
-            max_age=expiration
-        )
-    except:
-        return False
-    return email
+
 
 #def auth_check(personID):

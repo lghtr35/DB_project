@@ -1,18 +1,11 @@
 from flask import Flask,render_template,url_for,request,g,jsonify
-from API import users_all,user_one,post_user,salt,check_confirmation_token
+from API import users_all,user_one,post_user,salt
 from Users import User,All_users
 import requests
 def home_page():
     All_user_object=All_users()
     payload=All_user_object.get_all_users()
     return render_template("home.html",payload=payload[0])
-def confirm_page(token):
-    try:
-        email=check_confirmation_token(token)
-    except:
-        return("Confirmation link has expired or invalid.")
-    response=requests.get(url='http://localhost:8080/api/users/'+email)
-    print(response)
 def login_page():
     return render_template("login.html")
 def my_page():
@@ -29,7 +22,7 @@ def signup_page():
                 lname=request.form.get("lname")
                 bio=request.form.get("bio")
                 All_user_object=All_users()
-                new_user=User(email=email,fname=fname,lname=lname,bio=bio,is_admin=False,password=password,confirmed=False)
+                new_user=User(email=email,fname=fname,lname=lname,bio=bio,is_admin=False,password=password)
                 All_user_object.post_new_user(new_user)
                 return render_template("signup.html",error_message=error_bool)
             else:

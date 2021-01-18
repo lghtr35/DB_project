@@ -5,7 +5,6 @@ CREATE TABLE Users(
     e_mail VARCHAR(64) NOT NULL,
     is_admin BOOLEAN NOT NULL,
     bio VARCHAR(255),
-    confirmed BOOLEAN NOT NULL,
     PRIMARY KEY (personID)
 );
 CREATE TABLE Posts_ids(
