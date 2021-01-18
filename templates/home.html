@@ -11,6 +11,11 @@
       <input type="text" id="post_data" name="post"/>
       <input type="submit" value="submit"/>
     </form>
-    {{payload}}
+    <ul>
+    {% for  i in payload%}
+    <li><p>{{i.fname}} {{i.lname}} {{i.email}}</p></li>
+    
+    {% endfor %}
+    </ul>
   </div>
   {% endblock %}

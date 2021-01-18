@@ -10,15 +10,20 @@
     <li><a href="{{url_for('signup_page')}}">Signup</a></li>
   </ul>
 <div>
+{% if error_message %}
+<p style="color:red">Form wrong</p>
+{% endif %}
 <form action="" method="POST">
     <label for="email_label">Enter your ITU e-mail</label>
-    <input type="text" name="email" class="input"/>
+    <input type="text" name="email" class="input" required="required"/>
     <label for="Password_label">Give your password</label>
-    <input name="password" type="password"/>
+    <input name="password" type="password" required="required" pattern=".{6,}" title="8 characters minimum"/>
     <label for="fname_label">First Name</label>
     <input name="fname" type="text"/>
     <label for="lname_label">Last Name</label>
     <input name="lname" type="text"/>
+    <label for="bio_label">Bio</label>
+    <input name="bio" type="text">
     <input type="submit" name="Submit"/>
 </form>
 

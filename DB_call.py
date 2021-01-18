@@ -6,6 +6,6 @@ def get_db():
             host="localhost",
             user="root",
             password="sanane22021999",
-            database="Itu_soc_app"
+            database="itu_social_app"
         )
     return g.db
