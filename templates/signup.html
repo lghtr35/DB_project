@@ -1,14 +1,9 @@
 {% extends "layout.html"%}
-{%block title%}{{Username}}{%endblock%}
+{%block title%}Sign UP{%endblock%}
 {%block content%}
 
 
 <h1>Sign Up</h1>
-<ul>
-    <li><a href="{{ url_for('home_page') }}">Home</a></li>
-    <li><a href="{{ url_for('my_page') }}">Profile</a></li>
-    <li><a href="{{url_for('signup_page')}}">Signup</a></li>
-  </ul>
 <div>
 {% if error_message %}
 <p style="color:red">Form wrong</p>
@@ -17,7 +12,7 @@
     <label for="email_label">Enter your ITU e-mail</label>
     <input type="text" name="email" class="input" required="required"/>
     <label for="Password_label">Give your password</label>
-    <input name="password" type="password" required="required" pattern=".{6,}" title="8 characters minimum"/>
+    <input name="password" type="password" required="required" pattern=".{6,}" placeholder="6 characters minimum"/>
     <label for="fname_label">First Name</label>
     <input name="fname" type="text"/>
     <label for="lname_label">Last Name</label>

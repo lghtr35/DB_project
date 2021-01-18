@@ -1,11 +1,6 @@
   {% extends "layout.html" %}
   {% block title %}Home{% endblock %}
   {% block content %}
-  <ul>
-    <li><a href="{{ url_for('home_page') }}">Home</a></li>
-    <li><a href="{{ url_for('my_page') }}">Profile</a></li>
-    <li><a href="{{url_for('signup_page')}}">Signup</a></li>
-  </ul>
   <div>
     <form action="" method="POST" name="posting">
       <input type="text" id="post_data" name="post"/>

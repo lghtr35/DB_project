@@ -6,6 +6,12 @@
   </head>
   <body>
       <h1>MED</h1>
+      <ul>
+        <li><a href="{{ url_for('home_page') }}">Home</a></li>
+        <li><a href="{{ url_for('my_page') }}">Profile</a></li>
+        <li><a href="{{url_for('signup_page')}}">Sign up</a></li>
+        <li><a href="{{url_for('login_page')}}">Log in</a></li>
+      </ul>
     {% block content %}{% endblock %}
 
     <footer>

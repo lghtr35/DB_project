@@ -27,7 +27,7 @@ def user_one(data):
     if that_user:
         user_api={that_user[0]:{"first_name":that_user[1],"last_name":that_user[2],"email":that_user[3],"is_admin":that_user[4],"bio":that_user[5]}}
     else:
-        return "<h1>404</h1><p>The resource could not be found.</p>", 404
+        return {"error":"Not Found"}, 404
     return jsonify(user_api)
 def post_user():
     json_data=request.get_json()
@@ -46,7 +46,7 @@ def insert_one_user(data):
     cursor.execute("SELECT COUNT(*) FROM Users WHERE e_mail = %(email)s",data)
     check=cursor.fetchone()
     if(check[0]>0):
-        return {"response":"User exists"},404
+        return {"error":"User exists"},409
     cursor.execute("INSERT INTO Users (F_name,L_name,e_mail,is_admin,bio) VALUES (%(fname)s,%(lname)s,%(email)s,%(is_admin)s,%(bio)s)",data)
     cursor.execute("SELECT personID FROM Users WHERE e_mail = %(email)s",data)
     that_user_id=cursor.fetchone()
