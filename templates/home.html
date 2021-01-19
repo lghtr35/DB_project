@@ -2,15 +2,20 @@
   {% block title %}Home{% endblock %}
   {% block content %}
   <div>
-    <form action="" method="POST" name="posting">
-      <input type="text" id="post_data" name="post"/>
+    <form action="" method="POST">
+      <input type="text" id="payload" name="post"/>
+      
       <input type="submit" value="submit"/>
     </form>
+    <div>
     <ul>
     {% for  i in payload%}
-    <li><p>{{i.id}} {{i.fname}} {{i.lname}} {{i.email}}</p></li>
-    
+    <h1>{{i}}</h1>
+    {% for j in payload[i]%}
+    <li><p>{{j["name"]}}</p><p>{{j["payload"]}}</p><p>{{j["publish_date"]}}</p></li>
+    {% endfor %}
     {% endfor %}
     </ul>
+    </div>
   </div>
   {% endblock %}

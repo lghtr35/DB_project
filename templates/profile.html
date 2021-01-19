@@ -3,5 +3,30 @@
 {%block content%}
 <h1>Profile</h1>
 <div>
-  </div>
+  {% if not payload[1] %}
+  <form method="POST">
+  <button name="edit" value="clicked">Edit</button>
+  </form>
+  {%endif%}
+  {%if payload[1]%}
+    <h2>edit</h2>
+    <form method="POST">
+      <label for="email_label">Your ITU e-mail</label>
+      <input type="text" name="email" class="input"/>
+      <label for="Password_label">Change password</label>
+      <input name="password" type="password" pattern=".{6,}" placeholder="6 characters minimum"/>
+      <label for="fname_label">First Name</label>
+      <input name="fname" type="text"/>
+      <label for="lname_label">Last Name</label>
+      <input name="lname" type="text"/>
+      <label for="bio_label">Bio</label>
+      <input name="bio" type="text">
+      <button value="submit" name="Submit">Submit</button>
+      <button name="cancel" value="cancel">Cancel</button>
+    </form>
+  {%endif%}
+</div>
+<div>
+  <p>{{payload[0]["email"]}}</p><p>{{payload[0]["fname"]}}</p><p>{{payload[0]["lname"]}}</p><p>{{payload[0]["bio"]}}</p>
+</div>
 {%endblock%}

@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div>
+    <ul>
+    {% for  i in payload%}
+    <h1>{{i}}</h1>
+    {% for j in payload[i]%}
+    <li><p>{{j["name"]}}</p><p>{{j["payload"]}}</p><p>{{j["publish_date"]}}</p></li>
+    {% endfor %}
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
