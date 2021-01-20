@@ -49,4 +49,4 @@ lm.init_app(app)
 lm.login_view="login_page"
 
 if __name__=="__main__":
-    app.run(port=8080,debug=True)
+    app.run(port=8080)
