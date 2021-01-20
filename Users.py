@@ -19,9 +19,9 @@ class User(UserMixin): #login object
         return self.active
 def get_User_obj(data): #login object getter
     response=requests.get(request.host_url+"/api/users/"+str(data))
-    print(response.text)
     user=json.loads(response.text)
-    if user:
+    print(user)
+    if "error" not in user:
         response=requests.get(request.host_url+"/api/users/p/"+str(user["personID"]))
         password=json.loads(response.text)
         if password:

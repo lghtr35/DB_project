@@ -62,9 +62,12 @@ def login_page():
         email=request.form["email"]
         password=str(request.form["password"])
         user=get_User_obj(email)
-        if pbkdf2_sha256.verify(str(password),str(user.password[0])):
-            login_user(user)
-            return redirect(url_for("home_page"))
+        if user:
+            if pbkdf2_sha256.verify(str(password),str(user.password[0])):
+                login_user(user)
+                return redirect(url_for("home_page"))
+            else:
+                return redirect(url_for("login_page"))
         else:
             return redirect(url_for("login_page"))
     return render_template("login.html")
