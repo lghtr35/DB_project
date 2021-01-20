@@ -3,3 +3,4 @@ passlib
 flask
 mysql-connector-python
 requests
+gunicorn
