@@ -159,12 +159,11 @@ def delete_post(data):#delete post
 def get_friends_posts(data):#get all posts from users friends
     db=get_db()
     cursor=db.cursor()
-    query="""WITH posts_of_friends AS ( SELECT tb1.postID FROM Posts_ids tb1 INNER JOIN Friends_of_user tb2 ON tb1.personID=tb2.FriendID AND tb2.personID=%s AND tb2.accepted=TRUE)"""
-    cursor.execute(query+"SELECT tb3.* FROM Posts tb3 INNER JOIN posts_of_friends tb4 ON tb4.postID=tb3.postID",(data,))
+    cursor.execute("SELECT tb3.* FROM Posts tb3 INNER JOIN ( SELECT tb1.postID FROM Posts_ids tb1 INNER JOIN Friends_of_user tb2 ON tb1.personID=tb2.FriendID AND tb2.personID=%s AND tb2.accepted=TRUE) tb4 ON tb4.postID=tb3.postID",(data,))
     posts=cursor.fetchall()
-    cursor.execute(query+"SELECT tb5.* FROM Events tb5 INNER JOIN posts_of_friends tb6 ON tb5.postID=tb6.postID",(data,))
+    cursor.execute("SELECT tb5.* FROM Events tb5 INNER JOIN ( SELECT tb1.postID FROM Posts_ids tb1 INNER JOIN Friends_of_user tb2 ON tb1.personID=tb2.FriendID AND tb2.personID=%s AND tb2.accepted=TRUE) tb6 ON tb5.postID=tb6.postID",(data,))
     events=cursor.fetchall()
-    cursor.execute(query+"SELECT tb7.* FROM Items tb7 INNER JOIN posts_of_friends tb8 ON tb7.postId=tb8.postID",(data,))
+    cursor.execute("SELECT tb7.* FROM Items tb7 INNER JOIN ( SELECT tb1.postID FROM Posts_ids tb1 INNER JOIN Friends_of_user tb2 ON tb1.personID=tb2.FriendID AND tb2.personID=%s AND tb2.accepted=TRUE) tb8 ON tb7.postId=tb8.postID",(data,))
     items=cursor.fetchall()
     all_posts={
         "posts":[],
