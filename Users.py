@@ -19,12 +19,12 @@ class User(UserMixin): #login object
         return self.active
 def get_User_obj(data): #login object getter
     response=requests.get(request.host_url+"/api/users/"+str(data))
-    data=json.loads(response.text)
-    if data:
-        response=requests.get(request.host_url+"/api/users/p/"+str(data["personID"]))
+    user=json.loads(response.text)
+    if user:
+        response=requests.get(request.host_url+"/api/users/p/"+str(user["personID"]))
         password=json.loads(response.text)
         if password:
-            return User(id=data["personID"],email=data["email"],password=password["hash_pass"],bio=data["bio"],fname=data["fname"],lname=data["lname"],is_admin=data["is_admin"])
+            return User(id=user["personID"],email=user["email"],password=password["hash_pass"],bio=user["bio"],fname=user["fname"],lname=user["lname"],is_admin=user["is_admin"])
     return None
 def users_all(): #read all users
     db=get_db()
