@@ -37,7 +37,6 @@ def home_page():
     radio=request.form.get("radio")
     text=request.form.get("payload")
     is_news=request.form.get("is_news")
-    print(is_news)
     if(post_button):
         post={
             "payload":text,
@@ -50,10 +49,8 @@ def home_page():
         elif radio =="Item":
             price=request.form["price"]
             post.update({"price":str(price),"type":"2"})
-        print(post)
         response=requests.post(url=request.host_url+"/api/posts/",json=json.dumps(post))
         payload=json.loads(requests.get(request.host_url+"/api/posts/frnd/"+str(current_user.id)).text)
-        print(response.text)
         return render_template("home.html",payload=payload)
     payload=json.loads(requests.get(request.host_url+"/api/posts/frnd/"+str(current_user.id)).text)
     return render_template("home.html",payload=payload)
@@ -82,10 +79,8 @@ def my_page():
     reject=request.form.get("reject")
     if(accept):
         accept_resp=requests.put(url=request.host_url+"/api/frnd/"+str(accept))
-        print(accept_resp)
     if(reject):
         reject_resp=requests.delete(url=request.host_url+"/api/frnd/"+str(reject))
-        print(reject_resp)
     temp={}
     temp.update({"fname":fname,"lname":lname,"bio":bio,"email":email,"password":password})
     person={}
@@ -95,7 +90,6 @@ def my_page():
     submit=request.form.get("Submit")
     if(submit):
         response=requests.put(url=request.host_url+"/api/users/"+str(current_user.id),json=json.dumps(person))
-        print(response)
         payload=json.loads(requests.get(request.host_url+"/api/users/"+str(current_user.id)).text)
         posts_of_user=json.loads(requests.get(request.host_url+"/api/posts/").text)
         return render_template("profile.html",payload=[payload,False])
@@ -124,13 +118,15 @@ def person_page(data):
         return redirect(url_for("my_page"))
     add_friend=request.form.get("add_friend")
     if(add_friend):
-        print(add_friend)
         fr_req={"FriendID":str(add_friend),"accepted":False}
         response=requests.post(url=request.host_url+"/api/frnd/"+str(current_user.id),json=json.dumps(fr_req))
-        print(response)
     friends=json.loads(requests.get(request.host_url+"/api/frnd/accptd/"+str(current_user.id)).text)
+    are_u_fr=True
+    for i in friends:
+        if str(i["FriendID"])==str(data):
+            are_u_fr=False
     payload=json.loads(requests.get(request.host_url+"/api/users/"+str(data)).text)
-    return render_template("person.html",payload=[payload,False],friends=friends)  
+    return render_template("person.html",payload=[payload,False],friends=are_u_fr)  
 
 def signup_page():
     error_bool=False
@@ -150,7 +146,6 @@ def signup_page():
                 "bio":bio,
                 "is_admin":False}
                 response=requests.post(url=request.host_url+"/api/users/add",json=json.dumps(post))
-                print(response)
                 return render_template("signup.html",error_message=error_bool)
             else:
                 error_bool=True

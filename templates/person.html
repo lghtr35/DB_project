@@ -2,7 +2,7 @@
 {%block title%}{{Username}}{%endblock%}
 {%block content%}
 <h1>Profile</h1>
-{%if payload[0]["personID"] not in friends%}
+{%if friends %}
 <form method="POST">
     <button value="{{payload[0]['personID']}}" name="add_friend">Send friend request</button>
 </form>
