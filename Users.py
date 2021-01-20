@@ -19,7 +19,7 @@ class User(UserMixin): #login object
         return self.active
 def get_User_obj(data): #login object getter
     response=requests.get(request.host_url+"/api/users/"+str(data))
-    print(response)
+    print(response.text)
     user=json.loads(response.text)
     if user:
         response=requests.get(request.host_url+"/api/users/p/"+str(user["personID"]))
@@ -47,7 +47,11 @@ def user_one(data):#read one user
     if that_user:
         user_api={"personID":that_user[0],"fname":that_user[1],"lname":that_user[2],"email":that_user[3],"is_admin":that_user[4],"bio":that_user[5]}
     else:
+        cursor.close()
+        db.close()
         return {"error":"Not Found"}, 404
+    cursor.close()
+    db.close()
     return jsonify(user_api)
 def insert_one_user(data):#create one user
     db=get_db()
@@ -67,6 +71,7 @@ def insert_one_user(data):#create one user
     data.update({"id":that_user_id[0]})
     cursor.close()
     db.commit()
+    db.close()
     return data,201
 def delete_user(data):#delete one user
     db=get_db()
@@ -94,6 +99,7 @@ def delete_user(data):#delete one user
     cursor.execute("DELETE FROM Users WHERE personID=%s",(person[0],))
     cursor.close()
     db.commit()
+    db.close()
     return {"succes":"user deleted"},200
 def update_one_user(data,payload):#update one user
     db=get_db()
@@ -122,6 +128,7 @@ def update_one_user(data,payload):#update one user
     cursor.execute("UPDATE Passes SET hash_pass=%(password)s WHERE personID=%(personID)s",person_dict)
     cursor.close()
     db.commit()
+    db.close()
     return jsonify(person_dict)
 def auth_check(personID):#auth check
         db=get_db()
@@ -129,6 +136,8 @@ def auth_check(personID):#auth check
         cursor.execute("SELECT hash_pass FROM Passes WHERE personID=%s",(personID,))
 
         user_pass=cursor.fetchone()
+        cursor.close()
+        db.close()
         return {"hash_pass":user_pass},200
 def send_friendship(data):
     db=get_db()
@@ -146,6 +155,7 @@ def send_friendship(data):
     friend_req.update({"FriendshipID":newly_inserted[0]})
     cursor.close()
     db.commit()
+    db.close()
     return jsonify(friend_req)
 def accept_friendship(data):
     db=get_db()
@@ -156,6 +166,7 @@ def accept_friendship(data):
     cursor.execute("UPDATE Friends_of_user SET accepted=TRUE WHERE personID=%s AND FriendID=%s",(response[1],response[0],))
     cursor.close()
     db.commit()
+    db.close()
     return jsonify({"success":"friends are shipped"})
 def delete_friendship(data):
     db=get_db()
@@ -166,6 +177,7 @@ def delete_friendship(data):
     cursor.execute("DELETE FROM Friends_of_user WHERE personID=%s AND FriendID=%s",(response[1],response[0],))
     cursor.close()
     db.commit()
+    db.close()
     return jsonify({"success":"friendship is destroyed"})
 def get_users_friends(data):
     db=get_db()
@@ -177,6 +189,8 @@ def get_users_friends(data):
         cursor.execute("SELECT * FROM Users WHERE personID=%s",(i[1],))
         friend_data=cursor.fetchone()
         result.append({"FriendshipID":i[2],"personID":i[0],"FriendID":i[1],"accepted":i[3],"friend_data":{"personID":friend_data[0],"fname":friend_data[1],"lname":friend_data[2],"email":friend_data[3]}})
+    cursor.close()
+    db.close()
     return jsonify(result)
 def friendship_requests(data):
     db=get_db()
@@ -188,4 +202,6 @@ def friendship_requests(data):
         cursor.execute("SELECT * FROM Users WHERE personID=%s",(i[1],))
         friend_data=cursor.fetchone()
         result.append({"FriendshipID":i[2],"personID":i[0],"FriendID":i[1],"accepted":i[3],"friend_data":{"personID":friend_data[0],"fname":friend_data[1],"lname":friend_data[2],"email":friend_data[3]}})
+    cursor.close()
+    db.close()
     return jsonify(result)

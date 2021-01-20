@@ -24,7 +24,11 @@ def new_post():#add post
         cursor.close()
         db.commit()
     except:
+        cursor.close()
+        db.close()
         return {"error":"error occured"},400
+    cursor.close()
+    db.close()
     return data,200
 def get_all_posts():#get all of the posts
     db=get_db()
@@ -61,6 +65,8 @@ def get_all_posts():#get all of the posts
         user=cursor.fetchone()
         item={"user_info":{"personID":user[0],"Name":user[1]+" "+user[2],"email":user[3]},"postID":i[0],"payload":i[1],"price":i[2],"publish_date":i[3]}
         all_posts["items"].append(item)
+    cursor.close()
+    db.close()
     return jsonify(all_posts)
 def get_one_post(data):#get one post
     db=get_db()
@@ -83,7 +89,11 @@ def get_one_post(data):#get one post
     elif(Items):
         res_dict={"name":name[0]+" "+name[1],"postID":Items[0],"payload":Items[1],"price":Items[2],"publish_date":Items[3]}
     else:
+        cursor.close()
+        db.close()
         return {"error":"no post found"},404
+    cursor.close()
+    db.close()
     return jsonify(res_dict)
 def update_post(data):#update one post
     json_data=request.get_json()
@@ -135,6 +145,7 @@ def update_post(data):#update one post
         cursor.execute("UPDATE Items SET payload=%(payload)s,price=%(price)s,publish_date=CURRENT_TIMESTAMP WHERE postID=%(postID)s",post_dict)
     cursor.close()
     db.commit()
+    db.close()
     return jsonify(post_dict)
 def delete_post(data):#delete post
     db=get_db()
@@ -153,8 +164,11 @@ def delete_post(data):#delete post
         cursor.execute("DELETE FROM Posts_ids WHERE postID=%s",(post_root[0],))
         cursor.close()
         db.commit()
+        db.close()
         return {"success":"Post deleted"},200
-    except:
+    except:     
+        cursor.close()
+        db.close()
         return {"error":"an error occured"},400
 def get_friends_posts(data):#get all posts from users friends
     db=get_db()
@@ -191,6 +205,8 @@ def get_friends_posts(data):#get all posts from users friends
         user=cursor.fetchone()
         item={"user_info":{"personID":user[0],"Name":user[1]+" "+user[2],"email":user[3]},"postID":i[0],"payload":i[1],"price":i[2],"publish_date":i[3]}
         all_posts["items"].append(item)
+    cursor.close()
+    db.close()
     return jsonify(all_posts)
 
 
