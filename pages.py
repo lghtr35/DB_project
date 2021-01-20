@@ -127,7 +127,6 @@ def person_page(data):
             are_u_fr=False
     payload=json.loads(requests.get(request.host_url+"/api/users/"+str(data)).text)
     return render_template("person.html",payload=[payload,False],friends=are_u_fr)  
-
 def signup_page():
     error_bool=False
     if request.method == "POST":
