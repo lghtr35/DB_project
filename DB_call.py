@@ -6,7 +6,6 @@ def get_db():
             user="b07da6fa923ec8",
             password="53618f58",
             database="heroku_9d68bac344849a5",
-            use_pure=False
             )
         
     return db
