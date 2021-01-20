@@ -1,5 +1,5 @@
 from flask import Flask,render_template,url_for,request,g,jsonify,redirect,flash
-from pages import home_page,my_page,signup_page,login_page,post_user,update_user,discover_page
+from pages import home_page,my_page,signup_page,login_page,post_user,update_user,discover_page,person_page
 from Users import users_all,user_one,auth_check,get_User_obj,delete_user,send_friendship,accept_friendship,delete_friendship,get_users_friends,friendship_requests
 from Posts import new_post,delete_post,update_post,get_all_posts,get_one_post,get_friends_posts
 from flask_login import LoginManager,current_user,logout_user
@@ -23,6 +23,7 @@ app.add_url_rule("/signup",view_func=signup_page,methods=['GET','POST'])
 app.add_url_rule("/login",view_func=login_page,methods=['GET','POST'])
 app.add_url_rule("/logout",view_func=logout,methods=['GET','POST'])
 app.add_url_rule("/discover",view_func=discover_page,methods=['GET','POST'])
+app.add_url_rule("/person/<data>",view_func=person_page,methods=['GET','POST'])
 #API
 #   USER
 app.add_url_rule("/api/users/",view_func=users_all,methods=['GET'])

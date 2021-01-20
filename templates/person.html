@@ -1,0 +1,14 @@
+{% extends "layout.html"%}
+{%block title%}{{Username}}{%endblock%}
+{%block content%}
+<h1>Profile</h1>
+{%if payload[0]["personID"] not in friends%}
+{{payload[0]["personID"] not in friends}}
+<form method="POST">
+    <button value="{{payload[0]['personID']}}" name="add_friend">Send friend request</button>
+</form>
+{%endif%}
+<div>
+  <p>{{payload[0]["email"]}}</p><p>{{payload[0]["fname"]}}</p><p>{{payload[0]["lname"]}}</p><p>{{payload[0]["bio"]}}</p>
+</div>
+{%endblock%}

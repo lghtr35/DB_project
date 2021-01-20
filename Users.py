@@ -22,7 +22,6 @@ class User(UserMixin): #login object
 def get_User_obj(data): #login object getter
     response=requests.get(request.host_url+"/api/users/"+str(data))
     data=json.loads(response.text)
-    print(data)
     if data:
         response=requests.get(request.host_url+"/api/users/p/"+str(data["personID"]))
         password=json.loads(response.text)
@@ -75,13 +74,11 @@ def delete_user(data):#delete one user
     cursor=db.cursor()
     cursor.execute("SELECT * FROM Users WHERE personID = %s",(data,))
     person=cursor.fetchone()
-    print(person)
     if(not person):
         return {"error":"User not exists"},404
     cursor.execute("DELETE FROM Passes WHERE personID=%s",(person[0],))
     cursor.execute("SELECT * FROM Posts_ids WHERE personID = %s",(person[0],))
     posts_of_person=cursor.fetchall()
-    print(posts_of_person)
     cursor.execute("DELETE FROM Attendee_list WHERE personID=%s",(person[0],))
     cursor.execute("DELETE FROM Friends_of_user WHERE personID=%s",(person[0],))
     cursor.execute("DELETE FROM Friends_of_user WHERE personID=%s",(person[0],))
@@ -104,7 +101,6 @@ def update_one_user(data,payload):#update one user
     cursor=db.cursor()
     cursor.execute("SELECT * FROM Users WHERE personID = %s",(data,))
     person=cursor.fetchone()
-    print(person)
     if(not person):
         return {"error":"User not exists"},404
     cursor.execute("SELECT hash_pass FROM Passes WHERE personID = %s",(data,))
@@ -167,8 +163,8 @@ def delete_friendship(data):
     cursor=db.cursor()
     cursor.execute("SELECT * FROM Friends_of_user WHERE FriendshipID=%s",(data,))
     response=cursor.fetchone()
-    cursor.execute("DELETE FROM Friends_of_user SET accepted=TRUE WHERE personID=%s AND FriendID=%s",(response[0],response[1],))
-    cursor.execute("DELETE FROM Friends_of_user SET accepted=TRUE WHERE personID=%s AND FriendID=%s",(response[1],response[0],))
+    cursor.execute("DELETE FROM Friends_of_user WHERE personID=%s AND FriendID=%s",(response[0],response[1],))
+    cursor.execute("DELETE FROM Friends_of_user WHERE personID=%s AND FriendID=%s",(response[1],response[0],))
     cursor.close()
     db.commit()
     return jsonify({"success":"friendship is destroyed"})
@@ -179,18 +175,18 @@ def get_users_friends(data):
     response=cursor.fetchall()
     result=[]
     for i in response:
-        cursor.execute("SELECT * FROM Users WHERE personID=%s",(i[1]))
-        friend_data=response.fetchone()
+        cursor.execute("SELECT * FROM Users WHERE personID=%s",(i[1],))
+        friend_data=cursor.fetchone()
         result.append({"FriendshipID":i[2],"personID":i[0],"FriendID":i[1],"accepted":i[3],"friend_data":{"personID":friend_data[0],"fname":friend_data[1],"lname":friend_data[2],"email":friend_data[3]}})
     return jsonify(result)
 def friendship_requests(data):
     db=get_db()
     cursor=db.cursor()
-    cursor.execute("SELECT * FROM Friends_of_user WHERE personID=%s AND accepted=TRUE",(data,))
+    cursor.execute("SELECT * FROM Friends_of_user WHERE personID=%s AND accepted=FALSE",(data,))
     response=cursor.fetchall()
     result=[]
     for i in response:
-        cursor.execute("SELECT * FROM Users WHERE personID=%s",(i[1]))
-        friend_data=response.fetchone()
+        cursor.execute("SELECT * FROM Users WHERE personID=%s",(i[1],))
+        friend_data=cursor.fetchone()
         result.append({"FriendshipID":i[2],"personID":i[0],"FriendID":i[1],"accepted":i[3],"friend_data":{"personID":friend_data[0],"fname":friend_data[1],"lname":friend_data[2],"email":friend_data[3]}})
     return jsonify(result)

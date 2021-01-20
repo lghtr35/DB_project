@@ -1,15 +1,20 @@
 {% extends "layout.html"%}
 {%block title%}{{Username}}{%endblock%}
 {%block content%}
-<h1>Profile</h1>
-<div>
+<div class="container-fluid">
+  <h1 style="align-items: center;">Profile</h1>
+</div>
+<div class="d-flex justify-content-center">
+  <div class="container m-3 justify-content-end">
   {% if not payload[1] %}
   <form method="POST">
-  <button name="edit" value="clicked">Edit</button>
+  <button class="btn btn-primary" name="edit" value="clicked">Edit</button>
   </form>
   {%endif%}
+  </div>
+  <div class="container m-3">
   {%if payload[1]%}
-    <h2>edit</h2>
+    <h2>Edit</h2>
     <form method="POST">
       <label for="email_label">Your ITU e-mail</label>
       <input type="text" name="email" class="input"/>
@@ -26,7 +31,49 @@
     </form>
   {%endif%}
 </div>
+</div>
 <div>
-  <p>{{payload[0]["email"]}}</p><p>{{payload[0]["fname"]}}</p><p>{{payload[0]["lname"]}}</p><p>{{payload[0]["bio"]}}</p>
+  <div class="container m-5" style="border-radius: 3px;background-color: #f7f7f7;box-shadow: 5px 5px #d6d6d6;">
+    <h4 class="">{{payload[0]["email"]}} {{payload[0]["fname"]}} {{payload[0]["lname"]}} {{payload[0]["bio"]}}</h4>
+  </div>
+  <div class="container m-5" style="border-radius: 15px;background-color: #f7f7f7;box-shadow: 5px 5px #d6d6d6;">
+  {% for  i in posts_of_user%}
+  <h1>{{i}}</h1>
+  <details>
+    <summary>See all</summary>
+  {% for j in posts_of_user[i]%}
+  {%if current_user.id == j["user_info"]["personID"] %}
+  <ul><a href="{{url_for('person_page',data=j['user_info']['personID'])}}">{{j["user_info"]["Name"]}}</a><p>{{j["payload"]}}</p><p>{{j["price"]}}</p><p>{{j["publish_date"]}}</p></ul><br/>
+  {%endif%}
+  {% endfor %}
+</details>
+  {% endfor %}
+
+</div>
+<div class="d-flex flex-row" >
+  <div class="d-flex flex-column m-3 me-5" >
+    <h1>Friends</h1>
+    {%for i in friends%}
+      <div>
+        <div style="border: 3px; border-color: black;">
+          <text>{{i["friend_data"]["fname"]}} {{i["friend_data"]["lname"]}}</text><br/><text>{{i["friend_data"]["email"]}}</text>
+        </div>
+      </div>
+    {%endfor%}
+  </div>
+  <div class="d-flex flex-column m-3 ms-5">
+    <h1>Requests</h1>
+    {% for k in fr_req%}
+    <div>
+      <div style="border: 3px; border-color: black;">
+        <text>{{k["friend_data"]["fname"]}} {{k["friend_data"]["lname"]}}</text><br/><text>{{k["friend_data"]["email"]}}</text>
+        <form method="POST">
+          <button name="accept" class="btn btn-success me-2" value="{{k['FriendshipID']}}">Accept</button><button class="btn btn-danger ms-2" name="reject" value="{{k['FriendshipID']}}">Reject</button>
+        </form>
+      </div>
+  </div>
+  {%endfor%}
+</div>
+</div>
 </div>
 {%endblock%}

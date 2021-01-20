@@ -36,9 +36,6 @@ def get_all_posts():#get all of the posts
     Events=cursor.fetchall()
     cursor.execute("SELECT * FROM Items")
     Items=cursor.fetchall()
-    print(Posts)
-    print(Events)
-    print(Items)
     all_posts={
         "posts":[],
         "events":[],
@@ -47,23 +44,23 @@ def get_all_posts():#get all of the posts
     for i in Posts:
         cursor.execute("SELECT personID FROM Posts_ids WHERE postID=%s",(i[0],))
         personID=cursor.fetchone()
-        cursor.execute("SELECT F_name,L_name FROM Users WHERE personID=%s",(personID[0],))
-        name=cursor.fetchone()
-        post={"name":name[0]+" "+name[1],"postID":i[0],"payload":i[1],"is_news":i[2],"publish_date":i[3]}
+        cursor.execute("SELECT * FROM Users WHERE personID=%s",(personID[0],))
+        user=cursor.fetchone()
+        post={"user_info":{"personID":user[0],"Name":user[1]+" "+user[2],"email":user[3]},"postID":i[0],"payload":i[1],"is_news":i[2],"publish_date":i[3]}
         all_posts["posts"].append(post)
     for i in Events:
         cursor.execute("SELECT personID FROM Posts_ids WHERE postID=%s",(i[0],))
         personID=cursor.fetchone()
-        cursor.execute("SELECT F_name,L_name FROM Users WHERE personID=%s",(personID[0],))
-        name=cursor.fetchone()
-        event={"name":name[0]+" "+name[1],"postID":i[0],"payload":i[1],"publish_date":i[2]}
+        cursor.execute("SELECT * FROM Users WHERE personID=%s",(personID[0],))
+        user=cursor.fetchone()
+        event={"user_info":{"personID":user[0],"Name":user[1]+" "+user[2],"email":user[3]},"postID":i[0],"payload":i[1],"publish_date":i[2]}
         all_posts["events"].append(event)
     for i in Items:
         cursor.execute("SELECT personID FROM Posts_ids WHERE postID=%s",(i[0],))
         personID=cursor.fetchone()
-        cursor.execute("SELECT F_name,L_name FROM Users WHERE personID=%s",(personID[0],))
-        name=cursor.fetchone()
-        item={"name":name[0]+" "+name[1],"postID":i[0],"payload":i[1],"price":i[2],"publish_date":i[3]}
+        cursor.execute("SELECT * FROM Users WHERE personID=%s",(personID[0],))
+        user=cursor.fetchone()
+        item={"user_info":{"personID":user[0],"Name":user[1]+" "+user[2],"email":user[3]},"postID":i[0],"payload":i[1],"price":i[2],"publish_date":i[3]}
         all_posts["items"].append(item)
     return jsonify(all_posts)
 def get_one_post(data):#get one post
@@ -99,7 +96,6 @@ def update_post(data):#update one post
     cursor=db.cursor()
     cursor.execute("SELECT * FROM Posts_ids WHERE postID = %s",(data,))
     post_root=cursor.fetchone()
-    print(post_root)
     if(not post_root):
         return {"error":"User not exists"},404
     if str(post_root[2])=="0":
@@ -179,23 +175,23 @@ def get_friends_posts(data):#get all posts from users friends
     for i in posts:
         cursor.execute("SELECT personID FROM Posts_ids WHERE postID=%s",(i[0],))
         personID=cursor.fetchone()
-        cursor.execute("SELECT F_name,L_name FROM Users WHERE personID=%s",(personID[0],))
-        name=cursor.fetchone()
-        post={"name":name[0]+" "+name[1],"postID":i[0],"payload":i[1],"is_news":i[2],"publish_date":i[3]}
+        cursor.execute("SELECT * FROM Users WHERE personID=%s",(personID[0],))
+        user=cursor.fetchone()
+        post={"user_info":{"personID":user[0],"Name":user[1]+" "+user[2],"email":user[3]},"postID":i[0],"payload":i[1],"is_news":i[2],"publish_date":i[3]}
         all_posts["posts"].append(post)
     for i in events:
         cursor.execute("SELECT personID FROM Posts_ids WHERE postID=%s",(i[0],))
         personID=cursor.fetchone()
-        cursor.execute("SELECT F_name,L_name FROM Users WHERE personID=%s",(personID[0],))
-        name=cursor.fetchone()
-        event={"name":name[0]+" "+name[1],"postID":i[0],"payload":i[1],"publish_date":i[2]}
+        cursor.execute("SELECT * FROM Users WHERE personID=%s",(personID[0],))
+        user=cursor.fetchone()
+        event={"user_info":{"personID":user[0],"Name":user[1]+" "+user[2],"email":user[3]},"postID":i[0],"payload":i[1],"publish_date":i[2]}
         all_posts["events"].append(event)
     for i in items:
         cursor.execute("SELECT personID FROM Posts_ids WHERE postID=%s",(i[0],))
         personID=cursor.fetchone()
-        cursor.execute("SELECT F_name,L_name FROM Users WHERE personID=%s",(personID[0],))
-        name=cursor.fetchone()
-        item={"name":name[0]+" "+name[1],"postID":i[0],"payload":i[1],"price":i[2],"publish_date":i[3]}
+        cursor.execute("SELECT * FROM Users WHERE personID=%s",(personID[0],))
+        user=cursor.fetchone()
+        item={"user_info":{"personID":user[0],"Name":user[1]+" "+user[2],"email":user[3]},"postID":i[0],"payload":i[1],"price":i[2],"publish_date":i[3]}
         all_posts["items"].append(item)
     return jsonify(all_posts)
 

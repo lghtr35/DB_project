@@ -32,6 +32,29 @@ def update_user(data):
     return(response)
 @login_required
 def home_page():
+
+    post_button=request.form.get("post_button")
+    radio=request.form.get("radio")
+    text=request.form.get("payload")
+    is_news=request.form.get("is_news")
+    print(is_news)
+    if(post_button):
+        post={
+            "payload":text,
+            "personID":current_user.id
+        }
+        if radio == "Post":
+            post.update({"is_news":True if is_news else False,"type":"0"})
+        elif radio == "Event":
+            post.update({"type":"1"})
+        elif radio =="Item":
+            price=request.form["price"]
+            post.update({"price":str(price),"type":"2"})
+        print(post)
+        response=requests.post(url=request.host_url+"/api/posts/",json=json.dumps(post))
+        payload=json.loads(requests.get(request.host_url+"/api/posts/frnd/"+str(current_user.id)).text)
+        print(response.text)
+        return render_template("home.html",payload=payload)
     payload=json.loads(requests.get(request.host_url+"/api/posts/frnd/"+str(current_user.id)).text)
     return render_template("home.html",payload=payload)
 def login_page():
@@ -52,6 +75,14 @@ def my_page():
     bio=request.form.get("bio")
     email=request.form.get("email")
     password=request.form.get("password")
+    accept=request.form.get("accept")
+    reject=request.form.get("reject")
+    if(accept):
+        accept_resp=requests.put(url=request.host_url+"/api/frnd/"+str(accept))
+        print(accept_resp)
+    if(reject):
+        reject_resp=requests.delete(url=request.host_url+"/api/frnd/"+str(reject))
+        print(reject_resp)
     temp={}
     temp.update({"fname":fname,"lname":lname,"bio":bio,"email":email,"password":password})
     person={}
@@ -63,21 +94,40 @@ def my_page():
         response=requests.put(url=request.host_url+"/api/users/"+str(current_user.id),json=json.dumps(person))
         print(response)
         payload=json.loads(requests.get(request.host_url+"/api/users/"+str(current_user.id)).text)
+        posts_of_user=json.loads(requests.get(request.host_url+"/api/posts/").text)
         return render_template("profile.html",payload=[payload,False])
     cancel=request.form.get("cancel")
     if(cancel):
         payload=json.loads(requests.get(request.host_url+"/api/users/"+str(current_user.id)).text)
+        posts_of_user=json.loads(requests.get(request.host_url+"/api/posts/").text)
         return render_template("profile.html",payload=[payload,False])
     clicked=request.form.get("edit")
     if(clicked):
         payload=json.loads(requests.get(request.host_url+"/api/users/"+str(current_user.id)).text)
+        posts_of_user=json.loads(requests.get(request.host_url+"/api/posts/").text)
         return render_template("profile.html",payload=[payload,True])
     payload=json.loads(requests.get(request.host_url+"/api/users/"+str(current_user.id)).text)
-    return render_template("profile.html",payload=[payload,False])    
+    posts_of_user=json.loads(requests.get(request.host_url+"/api/posts/").text)
+    friends=json.loads(requests.get(request.host_url+"/api/frnd/accptd/"+str(current_user.id)).text)
+    friend_reqests=json.loads(requests.get(request.host_url+"/api/frnd/not/"+str(current_user.id)).text)
+    return render_template("profile.html",payload=[payload,False],posts_of_user=posts_of_user,fr_req=friend_reqests,friends=friends)    
 @login_required
 def discover_page():
     payload=json.loads(requests.get(request.host_url+"/api/posts").text)
     return render_template("discover.html",payload=payload)        
+@login_required
+def person_page(data):
+    if(str(current_user.id)==str(data)):
+        return redirect(url_for("my_page"))
+    add_friend=request.form.get("add_friend")
+    if(add_friend):
+        print(add_friend)
+        fr_req={"FriendID":str(add_friend),"accepted":False}
+        response=requests.post(url=request.host_url+"/api/frnd/"+str(current_user.id),json=json.dumps(fr_req))
+        print(response)
+    friends=json.loads(requests.get(request.host_url+"/api/frnd/accptd/"+str(current_user.id)).text)
+    payload=json.loads(requests.get(request.host_url+"/api/users/"+str(data)).text)
+    return render_template("person.html",payload=[payload,False],friends=friends)  
 
 def signup_page():
     error_bool=False
