@@ -2,7 +2,6 @@ from DB_call import get_db
 from flask import jsonify,request
 import json
 import requests
-import sys
 def new_post():#add post
     json_data=request.get_json()
     if(isinstance(json_data,str)):

@@ -2,3 +2,5 @@ flask-login
 passlib
 flask
 mysql-connector-python
+requests
+json
