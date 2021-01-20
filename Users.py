@@ -3,8 +3,6 @@ from flask import jsonify,request
 from flask_login import UserMixin
 import requests
 import json
-import uuid
-import uuid
 
 class User(UserMixin): #login object
     def __init__(self,id,is_admin,email,password,bio=None,fname=None,lname=None):

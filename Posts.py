@@ -199,4 +199,3 @@ def get_friends_posts(data):#get all posts from users friends
 
 
 
-

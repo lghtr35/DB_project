@@ -60,7 +60,7 @@ CREATE TABLE Attendee_list(
 );
 CREATE TABLE Comments_list(
     postID INT UNSIGNED,
-    comment_id INT UNSIGNED NOT NULL,
+    comment_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     payload VARCHAR(511) NOT NULL,
     publish_date  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     data_type TINYINT NOT NULL,
